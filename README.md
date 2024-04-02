@@ -13,6 +13,6 @@
 执行如下命令一键安装 1Panel:
 
 ```
-curl -sSL https://raw.githubusercontent.com/towy/1Panel/master/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
+curl -sSL https://raw.githubusercontent.com/towy/1Panel/master/install/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
 ```
 
