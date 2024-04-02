@@ -4,15 +4,23 @@
 
 该项目为 1Panel 安装包相关内容，包含了 1Panel 的安装脚本及默认配置文件等。
 
+## 运行环境
+
+```
+apt-get install musl
+```
+
+
+
 ## 问题反馈
 
 如果您在使用过程中遇到什么问题，或有进一步的需求需要反馈，请提交 GitHub Issue 到 [1Panel 项目的主仓库](https://github.com/1Panel-dev/1Panel/issues)
 
-# **一键安装**
+## **一键安装**
 
 执行如下命令一键安装 1Panel:
 
 ```
-curl -sSL https://raw.githubusercontent.com/towy/1Panel/master/install/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
+curl -sSL https://raw.githubusercontent.com/towy/1Panel/master/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
 ```
 
