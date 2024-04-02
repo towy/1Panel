@@ -6,6 +6,8 @@
 
 ## 运行环境
 
+使用musl构建后的运行环境
+
 ```
 apt-get install musl
 ```
