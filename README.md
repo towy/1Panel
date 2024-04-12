@@ -25,4 +25,10 @@ apt-get install musl
 ```
 curl -sSL https://raw.githubusercontent.com/towy/1Panel/master/install/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
 ```
+本地商店
+
+```
+curl -sSL https://raw.githubusercontent.com/towy/1Panel/master/install/install_appstore.sh -o install_appstore.sh && sudo bash install_appstore.sh
+```
+
 
