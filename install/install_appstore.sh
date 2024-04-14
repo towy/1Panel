@@ -35,8 +35,15 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "复制文件..."
-cp -rf "$appstore_dir/apps/"* "$install_path/resource/apps/local/"
+echo "复制官方应用..."
+for app in "$appstore_dir/apps/"*; do
+    app_name=$(basename "$app")
+    if [ ! -d "$install_path/resource/apps/local/$app_name" ]; then
+        cp -rf "$app" "$install_path/resource/apps/local/"
+    else
+        echo "跳过已存在的应用: $app_name"
+    fi
+done
 rm -rf "$appstore_dir"
 
 # 第三方应用商店，使用 git 拉取更新
@@ -59,7 +66,14 @@ else
     fi
 fi
 
-echo "复制文件..."
-cp -rf "$appstore_dir/apps/"* "$install_path/resource/apps/local/"
+echo "复制第三方应用..."
+for app in "$appstore_dir/apps/"*; do
+    app_name=$(basename "$app")
+    if [ ! -d "$install_path/resource/apps/local/$app_name" ]; then
+        cp -rf "$app" "$install_path/resource/apps/local/"
+    else
+        echo "跳过已存在的应用: $app_name"
+    fi
+done
 
 echo "完成。"
