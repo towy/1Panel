@@ -39,6 +39,17 @@ if [ ! -d "$install_path" ]; then
     exit 1
 fi
 
+# 定义函数处理应用复制
+copy_app() {
+  local app_dir="$1"
+  local app_name=$(basename "$app_dir")
+  if [ ! -d "$install_path/resource/apps/local/$app_name" ]; then
+      cp -rf "$app_dir" "$install_path/resource/apps/local/"
+  else
+      echo "跳过已存在的应用: $app_name"
+  fi
+}
+
 # 官方应用商店
 appstore_dir="$install_path/resource/apps/local/appstore-official"
 
@@ -53,12 +64,7 @@ fi
 # 复制官方应用
 echo "复制应用..."
 for app in "$appstore_dir/apps/"*; do
-    app_name=$(basename "$app")
-    if [ ! -d "$install_path/resource/apps/local/$app_name" ]; then
-        cp -rf "$app" "$install_path/resource/apps/local/"
-    else
-        echo "跳过已存在的应用: $app_name"
-    fi
+  copy_app "$app"
 done
 
 # 清理官方应用商店
@@ -89,12 +95,7 @@ if [[ -z $official_only ]]; then
   # 复制第三方应用
   echo "复制第三方应用..."
   for app in "$appstore_local_dir/apps/"*; do
-      app_name=$(basename "$app")
-      if [ ! -d "$install_path/resource/apps/local/$app_name" ]; then
-          cp -rf "$app" "$install_path/resource/apps/local/"
-      else
-          echo "跳过已存在的应用: $app_name"
-      fi
+    copy_app "$app"
   done
 fi
 
