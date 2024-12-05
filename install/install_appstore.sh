@@ -20,6 +20,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# 获取 1Panel 安装路径
 read -p "1Panel 安装路径是否为 /opt/1panel? [Y/n] " confirm
 confirm=${confirm:-Y}  # 默认为 Y
 
@@ -50,53 +51,64 @@ copy_app() {
   fi
 }
 
-# 官方应用商店
-appstore_dir="$install_path/resource/apps/local/appstore-official"
+# 定义函数处理仓库克隆和更新
+handle_repo() {
+  local repo_url="$1"
+  local branch="$2"
+  local target_dir="$3"
 
-# 克隆官方应用商店资源
-echo "克隆官方应用商店资源..."
-git clone -b dev --depth 1 https://github.com/1Panel-dev/appstore "$appstore_dir"
-if [ $? -ne 0 ]; then
-    echo "克隆失败，请检查您的互联网连接和URL：https://github.com/1Panel-dev/appstore"
-    exit 1
-fi
-
-# 复制官方应用
-echo "复制应用..."
-for app in "$appstore_dir/apps/"*; do
-  copy_app "$app"
-done
-
-# 清理官方应用商店
-rm -rf "$appstore_dir"
-
-# 判断是否克隆第三方仓库
-if [[ -z $official_only ]]; then
-  # 第三方应用商店，使用 git 拉取更新
-  appstore_local_dir="$install_path/resource/apps/local/appstore-localApps"
-  
-  if [ ! -d "$appstore_local_dir" ]; then
-      echo "克隆第三方应用商店资源..."
-      git clone -b localApps https://github.com/okxlin/appstore "$appstore_local_dir"
+  if [ ! -d "$target_dir" ]; then
+      echo "克隆仓库资源: $repo_url"
+      git clone -b "$branch" --depth 1 "$repo_url" "$target_dir"
       if [ $? -ne 0 ]; then
-          echo "克隆失败，请检查您的互联网连接和URL：https://github.com/okxlin/appstore"
+          echo "克隆失败，请检查您的互联网连接和URL：$repo_url"
           exit 1
       fi
   else
-      echo "更新第三方应用商店资源..."
-      cd "$appstore_local_dir"
-      git pull 
+      echo "更新仓库资源: $target_dir"
+      cd "$target_dir"
+      git pull
       if [ $? -ne 0 ]; then
           echo "更新失败，请检查您的互联网连接和仓库状态。"
           exit 1
       fi
   fi
+}
+
+# 官方应用商店
+appstore_official_dir="$install_path/resource/apps/local/appstore-official"
+handle_repo "https://github.com/1Panel-dev/appstore" "dev" "$appstore_official_dir"
+
+# 复制官方应用
+echo "复制应用..."
+for app in "$appstore_official_dir/apps/"*; do
+  copy_app "$app"
+done
+
+# 清理官方应用商店
+rm -rf "$appstore_official_dir"
+
+# 判断是否克隆第三方仓库
+if [[ -z $official_only ]]; then
+  # 第三方应用商店
+  appstore_local_dir="$install_path/resource/apps/local/appstore-localApps"
+  handle_repo "https://github.com/okxlin/appstore" "localApps" "$appstore_local_dir"
 
   # 复制第三方应用
   echo "复制第三方应用..."
   for app in "$appstore_local_dir/apps/"*; do
     copy_app "$app"
   done
+
+  # 新增的第三方应用商店
+  appstore_custom_dir="$install_path/resource/apps/local/appstore-custom"
+  handle_repo "https://github.com/QYG2297248353/appstore-1panel" "custom" "$appstore_custom_dir"
+
+  # 复制新增的第三方应用
+  echo "复制新增的第三方应用..."
+  for app in "$appstore_custom_dir/apps/"*; do
+    copy_app "$app"
+  done
 fi
 
-echo "完成。" 
+echo "完成。"
